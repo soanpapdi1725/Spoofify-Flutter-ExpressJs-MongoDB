@@ -1,10 +1,11 @@
 import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/core/utils.dart';
+import 'package:client/core/widgets/custom_field.dart';
 import 'package:client/core/widgets/loader.dart';
 import 'package:client/features/auth/view/pages/signup_page.dart';
 import 'package:client/features/auth/view/widgets/auth_gradient_button.dart';
-import 'package:client/features/auth/view/widgets/custom_field.dart';
 import 'package:client/features/auth/viewmodel/auth_viewmodel.dart';
+import 'package:client/features/home/view/pages/home_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,22 +26,25 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
-    formKey.currentState!.validate();
+    formKey.currentState?.validate();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(authViewmodelProvider)?.isLoading == true;
+    final isLoading = ref.watch(
+      authViewmodelProvider.select((val) => val?.isLoading == true),
+    );
     ref.listen(authViewmodelProvider, (_, next) {
       next?.when(
         data: (data) {
           showSnackBar(context, "User Logged in Successfully", true);
           // todo on user login navigate to homeScreen
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => SignupPage()),
-          // );
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+            (_) => false,
+          );
         },
 
         error: (error, st) {
@@ -85,12 +89,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         AuthGradientButton(
                           buttonText: "Login",
                           onTap: () async {
-                            await ref
-                                .read(authViewmodelProvider.notifier)
-                                .loginUser(
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                );
+                            if (formKey.currentState!.validate()) {
+                              await ref
+                                  .read(authViewmodelProvider.notifier)
+                                  .loginUser(
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                  );
+                            } else {
+                              showSnackBar(
+                                context,
+                                "Fill Fields correctly to login",
+                                false,
+                              );
+                            }
                           },
                         ),
                         const SizedBox(height: 5),

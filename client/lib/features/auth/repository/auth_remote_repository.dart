@@ -14,6 +14,29 @@ AuthRemoteRepository authRemoteRepository(Ref ref) {
 }
 
 class AuthRemoteRepository {
+  Future<Either<Failure, UserModel>> getCurrentUserData(String token) async {
+    try {
+      final response = await http.post(
+        Uri.parse("http://${ServerConstant.serverUrl}:4000/api/v1/auth/"),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      final resFromBody = jsonDecode(response.body) as Map<String, dynamic>;
+      if (response.statusCode != 200) {
+        return Left(Failure(resFromBody["message"]));
+      }
+      print(resFromBody['data']);
+      return Right(
+        UserModel.fromMap(resFromBody['data']).copyWith(token: token),
+      );
+    } catch (error) {
+      return Left(Failure(error));
+    }
+  }
+
   Future<Either<Failure, UserModel>> signUpFunction({
     required String name,
     required String email,
@@ -50,6 +73,7 @@ class AuthRemoteRepository {
       if (response.statusCode != 200) {
         return Left(Failure(user["message"]));
       }
+      print(user["data"]);
       return Right(UserModel.fromMap(user['data']));
     } catch (error) {
       return Left(Failure(error));

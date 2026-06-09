@@ -1,3 +1,3 @@
 class ServerConstant {
-  static const String serverUrl = "10.185.227.232";
+  static const String serverUrl = "10.121.204.232";
 }

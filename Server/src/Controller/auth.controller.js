@@ -120,7 +120,7 @@ export const postLogin = async (req, res) => {
     //
     // make payload
     const payload = {
-      email: email,
+      email: userExist.email,
       id: userExist._id,
     };
     // sign jwt
@@ -156,5 +156,52 @@ export const postLogin = async (req, res) => {
     // error message if any error occurs
     console.log("ERROR WHILE LOGIN", error);
     return sendResponse(res, 500, false, "Failed To Login... please try again");
+  }
+};
+
+export const sendUserData = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    // get user token
+    const token =
+      (authHeader && authHeader.startsWith("Bearer ")
+        ? authHeader.replace("Bearer ", "")
+        : null) || req.cookies?.token;
+    // validate is there token available or not
+    if (!token) {
+      return sendResponse(res, 404, false, "Token not found");
+    }
+    // decode the token
+    const decodedUser = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decodedUser);
+    // get user id from token
+    // search in db
+    const isUserExist = await User.findOne({
+      _id: decodedUser.id,
+      email: decodedUser.email,
+    });
+    // if not found send 404
+    if (!isUserExist) {
+      return sendResponse(res, 404, false, "User does not exist");
+    }
+    isUserExist.password = undefined;
+    console.log(isUserExist);
+    // if found send response with user data
+    return sendResponse(
+      res,
+      200,
+      true,
+      "User Found And sent successfully",
+      isUserExist,
+    );
+  } catch (error) {
+    // error message if any error occurs
+    console.log("ERROR WHILE VERIFYING TOKEN AND SENDING BACK TO USER", error);
+    return sendResponse(
+      res,
+      500,
+      false,
+      "Failed To Verify the token... please try again",
+    );
   }
 };

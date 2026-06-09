@@ -13,6 +13,8 @@ class AppTheme {
       contentPadding: const EdgeInsets.all(27),
       enabledBorder: _borderStyles(Pallete.borderColor),
       focusedBorder: _borderStyles(Pallete.gradient1),
+      errorBorder: _borderStyles(Pallete.gradient3),
+      focusedErrorBorder: _borderStyles(Pallete.gradient1),
     ),
   ); //ThemeData is class // copyWith is like change what you want and else will be the same
 }
