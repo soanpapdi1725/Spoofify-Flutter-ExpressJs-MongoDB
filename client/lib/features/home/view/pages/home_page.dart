@@ -1,6 +1,7 @@
 import 'package:client/features/auth/repository/auth_local_repository.dart';
 import 'package:client/features/auth/view/pages/login_page.dart';
 import 'package:client/features/home/view/pages/upload_song_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,6 +17,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+      
         title: Text("Home"),
         actions: [
           IconButton(
@@ -25,7 +27,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 MaterialPageRoute(builder: (context) => UploadSongPage()),
               );
             },
-            icon: Icon(Icons.music_note),
+            icon: Icon(CupertinoIcons.music_note_list),
           ),
           IconButton(
             onPressed: () {

@@ -14,10 +14,11 @@ AuthRemoteRepository authRemoteRepository(Ref ref) {
 }
 
 class AuthRemoteRepository {
+  final String authUrl = "http://${ServerConstant.serverUrl}:4000/api/v1/auth";
   Future<Either<Failure, UserModel>> getCurrentUserData(String token) async {
     try {
       final response = await http.post(
-        Uri.parse("http://${ServerConstant.serverUrl}:4000/api/v1/auth/"),
+        Uri.parse("$authUrl/"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $token",
@@ -44,7 +45,7 @@ class AuthRemoteRepository {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse("http://${ServerConstant.serverUrl}:4000/api/v1/auth/signup"),
+        Uri.parse("$authUrl/signup"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'name': name, 'email': email, 'password': password}),
       );
@@ -65,7 +66,7 @@ class AuthRemoteRepository {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse("http://${ServerConstant.serverUrl}:4000/api/v1/auth/login"),
+        Uri.parse("$authUrl/login"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'password': password}),
       );

@@ -19,8 +19,8 @@ export const uploadSongController = async (req, res) => {
     if (!artistNames || !songName || !hexCode) {
       return sendResponse(res, 400, false, "Fields are Empty");
     }
-    if(!thumbnail || !song){
-      return sendResponse(res, 400, false, "Song And Thumbnail are required")
+    if (!thumbnail || !song) {
+      return sendResponse(res, 400, false, "Song And Thumbnail are required");
     }
     // check user id exist in database or not if not then return that user does not exist
     const isUserExist = await User.findById(id);
@@ -30,11 +30,11 @@ export const uploadSongController = async (req, res) => {
     // if not then send thumbnail and song to cloudinary and get the response
     const thumbnailUploaded = await uploadImageToCloudinary(
       thumbnail,
-      process.env.CLOUDINARY_THUMBNAIL_FOLDER,
+      `${process.env.CLOUDINARY_FOLDER}/${songName}`,
     );
     const songUploaded = await uploadSongToCloudinary(
       song,
-      process.env.CLOUDINARY_SONG_FOLDER,
+      `${process.env.CLOUDINARY_FOLDER}/${songName}`,
     );
     // save that response's secureUrl and public Id(both song and thumbnail) in database
     const newSongAdded = await Song.create({
