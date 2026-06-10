@@ -6,7 +6,7 @@ import {
   postSignup,
   sendUserData,
 } from "../Controller/auth.controller.js";
-const authRouter = express().router;
+const authRouter = express.Router();
 
 authRouter.post("/signup", postSignup);
 authRouter.post("/login", postLogin);
