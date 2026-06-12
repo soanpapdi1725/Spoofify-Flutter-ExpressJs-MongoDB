@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const songSchema = mongoose.Schema(
   {
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     songName: { type: String, required: true },
     artistNames: { type: String, required: true },
     hexCode: { type: String, required: true },
@@ -13,4 +14,9 @@ const songSchema = mongoose.Schema(
   { timestamps: true },
 );
 
+songSchema.set("toJSON", {transform: (doc, ret)=> {
+  ret.id = ret._id;
+  delete ret._id;
+  delete ret.__v
+}})
 export default mongoose.model("Song", songSchema);

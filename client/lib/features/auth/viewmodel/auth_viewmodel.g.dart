@@ -41,13 +41,13 @@ final class AuthViewmodelProvider
   }
 }
 
-String _$authViewmodelHash() => r'e19f7ee8a69e370f31b7a9306e1c2081e84dc626';
+String _$authViewmodelHash() => r'ed907918a30b24dd2df9a455977973321b6b1084';
 
 abstract class _$AuthViewmodel extends $Notifier<AsyncValue<UserModel>?> {
   AsyncValue<UserModel>? build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<AsyncValue<UserModel>?, AsyncValue<UserModel>?>;
     final element =
@@ -58,6 +58,6 @@ abstract class _$AuthViewmodel extends $Notifier<AsyncValue<UserModel>?> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

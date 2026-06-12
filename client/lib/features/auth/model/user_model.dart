@@ -6,13 +6,13 @@ class UserModel {
   final String firstName;
   final String lastName;
   final String email;
-  final String token;
+  final String? token;
   UserModel({
     required this.id,
     required this.firstName,
     required this.lastName,
     required this.email,
-    required this.token,
+    this.token,
   });
 
   UserModel copyWith({
@@ -43,12 +43,11 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      // null handling so that whenever userModel is created it's values don't be null
-      id: map['id'] ?? "",
-      firstName: map['firstName'] ?? "",
-      lastName: map['lastName'] ?? "",
-      email: map['email'] ?? "",
-      token: map['token'] ?? "",
+      id: map['id'] as String,
+      firstName: map['firstName'] as String,
+      lastName: map['lastName'] as String,
+      email: map['email'] as String,
+      token: map['token'] != null ? map['token'] as String : null,
     );
   }
 
@@ -64,7 +63,6 @@ class UserModel {
 
   @override
   bool operator ==(covariant UserModel other) {
-    // helps in checking that two instances are actually same or not, not just by type but by values
     if (identical(this, other)) return true;
 
     return other.id == id &&

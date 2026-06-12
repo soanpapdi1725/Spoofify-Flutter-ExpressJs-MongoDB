@@ -42,14 +42,14 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           // Todo send user to homePage
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const SignupPage()),
+            MaterialPageRoute(builder: (context) => const LoginPage()),
           );
         },
         error: (error, st) {
           showSnackBar(context, error.toString(), false);
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const LoginPage()),
+            MaterialPageRoute(builder: (context) => const SignupPage()),
           );
         },
         loading: () {},

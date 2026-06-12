@@ -65,20 +65,14 @@ export const postSignup = async (req, res) => {
     //   email,
     // );
     // Send Response with cookie and json -> not by function
-    const userToSend = {
-      id: newUser._id,
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      email: newUser.email,
-      token: token,
-      createdAt: newUser.createdAt,
-      updatedAt: newUser.updatedAt,
-    };
-    return res.cookie("token", token, cookieOptions).status(200).json({
-      success: true,
-      message: "User is Created And Logged in Successfully",
-      data: userToSend,
-    });
+    return res
+      .cookie("token", token, cookieOptions)
+      .status(200)
+      .json({
+        success: true,
+        message: "User is Created And Logged in Successfully",
+        data: { ...newUser.toJSON(), token },
+      });
   } catch (error) {
     // error message if any error occurs
     console.log("ERROR WHILE SIGNING UP", error);
@@ -138,20 +132,15 @@ export const postLogin = async (req, res) => {
     //   email,
     // );
     // Send Response with cookie and json -> not by function
-    const userToSend = {
-      id: userExist._id,
-      firstName: userExist.firstName,
-      lastName: userExist.lastName,
-      email: userExist.email,
-      token: token,
-      createdAt: userExist.createdAt,
-      updatedAt: userExist.updatedAt,
-    };
-    return res.cookie("token", token, cookieOptions).status(200).json({
-      success: true,
-      message: "User Logged in Successfully",
-      data: userToSend,
-    });
+    console.log(userExist.toJSON());
+    return res
+      .cookie("token", token, cookieOptions)
+      .status(200)
+      .json({
+        success: true,
+        message: "User Logged in Successfully",
+        data: { ...userExist.toJSON(), token },
+      });
   } catch (error) {
     // error message if any error occurs
     console.log("ERROR WHILE LOGIN", error);
@@ -179,21 +168,17 @@ export const sendUserData = async (req, res) => {
     const isUserExist = await User.findOne({
       _id: decodedUser.id,
       email: decodedUser.email,
-    });
+    })
+      
     // if not found send 404
     if (!isUserExist) {
       return sendResponse(res, 404, false, "User does not exist");
     }
-    isUserExist.password = undefined;
     console.log(isUserExist);
     // if found send response with user data
-    return sendResponse(
-      res,
-      200,
-      true,
-      "User Found And sent successfully",
-      isUserExist,
-    );
+    return sendResponse(res, 200, true, "User Found And sent successfully", {
+      ...isUserExist.toJSON(),
+    });
   } catch (error) {
     // error message if any error occurs
     console.log("ERROR WHILE VERIFYING TOKEN AND SENDING BACK TO USER", error);

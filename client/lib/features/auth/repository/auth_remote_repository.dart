@@ -14,11 +14,10 @@ AuthRemoteRepository authRemoteRepository(Ref ref) {
 }
 
 class AuthRemoteRepository {
-  final String authUrl = "http://${ServerConstant.serverUrl}:4000/api/v1/auth";
   Future<Either<Failure, UserModel>> getCurrentUserData(String token) async {
     try {
       final response = await http.post(
-        Uri.parse("$authUrl/"),
+        Uri.parse("${ServerConstant.authServerApi}/"),
         headers: {
           "Content-Type": "application/json",
           "Authorization": "Bearer $token",
@@ -29,7 +28,7 @@ class AuthRemoteRepository {
       if (response.statusCode != 200) {
         return Left(Failure(resFromBody["message"]));
       }
-      print(resFromBody['data']);
+      print("current data function ${resFromBody['data']}");
       return Right(
         UserModel.fromMap(resFromBody['data']).copyWith(token: token),
       );
@@ -45,7 +44,7 @@ class AuthRemoteRepository {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse("$authUrl/signup"),
+        Uri.parse("${ServerConstant.authServerApi}/signup"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'name': name, 'email': email, 'password': password}),
       );
@@ -66,7 +65,7 @@ class AuthRemoteRepository {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse("$authUrl/login"),
+        Uri.parse("${ServerConstant.authServerApi}/login"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': email, 'password': password}),
       );

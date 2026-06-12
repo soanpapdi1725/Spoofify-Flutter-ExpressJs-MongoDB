@@ -38,6 +38,7 @@ export const uploadSongController = async (req, res) => {
     );
     // save that response's secureUrl and public Id(both song and thumbnail) in database
     const newSongAdded = await Song.create({
+      createdBy: isUserExist._id,
       songName: songName,
       artistNames: artistNames,
       hexCode: hexCode,
@@ -72,6 +73,41 @@ export const uploadSongController = async (req, res) => {
       500,
       false,
       "Failed To Add Song... please try again",
+    );
+  }
+};
+
+export const getSongList = async (req, res) => {
+  try {
+    const all_songs = await Song.find(
+      {},
+      {
+        createdBy: true,
+        songName: true,
+        artistNames: true,
+        hexCode: true,
+        song_url: true,
+        thumbnail_url: true,
+      },
+    )
+      .populate("createdBy", "_id firstName lastName email")
+      .exec();
+
+    return sendResponse(
+      res,
+      200,
+      true,
+      "Successfully sent All Song List",
+      all_songs,
+    );
+  } catch (error) {
+    // error message if any error occurs
+    console.log("ERROR WHILE SENDING SONGLIST", error);
+    return sendResponse(
+      res,
+      500,
+      false,
+      "Failed To sending Songlist... please try again",
     );
   }
 };

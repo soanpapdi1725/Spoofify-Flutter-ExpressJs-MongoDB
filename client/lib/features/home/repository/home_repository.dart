@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:client/core/constants/server_constant.dart';
+import 'package:client/features/home/model/song_model.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,12 +22,10 @@ class HomeRepository {
     required String hexCode,
     required String token,
   }) async {
-    final String songUrl =
-        "http://${ServerConstant.serverUrl}:4000/api/v1/song";
     try {
       final request = http.MultipartRequest(
         "POST",
-        Uri.parse("$songUrl/upload"),
+        Uri.parse("${ServerConstant.songServerApi}/upload"),
       );
       request
         ..files.addAll([
@@ -51,6 +51,32 @@ class HomeRepository {
     } catch (error) {
       print(error);
       return Left(Failure("Error Catch"));
+    }
+  }
+
+  Future<Either<Failure, List<SongModel>>> getAllSongFunction({
+    required String token,
+  }) async {
+    try {
+      final res = await http.get(
+        Uri.parse("${ServerConstant.songServerApi}/All_list"),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+      final resFromBody = jsonDecode(res.body) as Map<String, dynamic>;
+      if (res.statusCode != 200) {
+        return Left(Failure(resFromBody["message"]));
+      }
+      List<SongModel> songList = [];
+      for (final singleSong in resFromBody["data"]) {
+        songList.add(SongModel.fromMap(singleSong));
+      }
+      print(songList);
+      return Right(songList);
+    } catch (error) {
+      return Left(Failure(error.toString()));
     }
   }
 }

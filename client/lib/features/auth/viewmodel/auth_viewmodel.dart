@@ -68,10 +68,11 @@ class AuthViewmodel extends _$AuthViewmodel {
   }
 
   AsyncValue<UserModel>? _loginSuccess(UserModel user) {
-    _authLocalRepository.setToken(user.token);
-    _currentUserNotifier.addUser(
-      user,
-    ); //whenever login happens update the current user
+    if (user.token != null) {
+      _authLocalRepository.setToken(user.token);
+      _currentUserNotifier.addUser(user);
+    }
+    //whenever login happens update the current user
     return state = AsyncValue.data(user);
   }
 
@@ -97,6 +98,7 @@ class AuthViewmodel extends _$AuthViewmodel {
   }
 
   AsyncValue<UserModel> _updateUserOnRestart(UserModel user) {
+    print("User $user");
     _currentUserNotifier.addUser(user);
     return state = AsyncValue.data(user);
   }
