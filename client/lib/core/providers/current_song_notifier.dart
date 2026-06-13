@@ -35,4 +35,12 @@ class CurrentSongNotifier extends _$CurrentSongNotifier {
     }
     state = (song: state.song, isPlaying: !state.isPlaying);
   }
+
+  void seekSong(double val) {
+    audioPlayer?.seek(
+      Duration(
+        milliseconds: (val * audioPlayer!.duration!.inMilliseconds).toInt(),
+      ),
+    );
+  }
 }

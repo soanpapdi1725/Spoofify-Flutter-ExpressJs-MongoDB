@@ -1,5 +1,6 @@
 import 'package:client/core/providers/current_song_notifier.dart';
 import 'package:client/core/theme/app_pallete.dart';
+import 'package:client/core/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,167 +18,227 @@ class MusicPlayer extends ConsumerWidget {
           Navigator.pop(context);
         }
       },
-      child: Scaffold(
-        body: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
-            children: [
-              Container(
-                margin: EdgeInsets.all(12),
-                height: MediaQuery.of(context).size.height,
-
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  image: DecorationImage(
-                    image: NetworkImage(currentSong.song!.thumbnail_url),
-                    filterQuality: FilterQuality.high,
-                    fit: BoxFit.fitHeight,
+      child: SafeArea(
+        bottom: false,
+        top: false,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                hexToRgb(currentSong.song!.hexCode),
+                const Color(0xff121212),
+              ],
+            ),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Scaffold(
+            backgroundColor: Pallete.transparentColor,
+            appBar: AppBar(
+              backgroundColor: Pallete.transparentColor,
+              leading: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Transform.translate(
+                  offset: Offset(-15, 0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Image.asset("assets/images/pull-down-arrow.png"),
                   ),
                 ),
               ),
-              Positioned(
-                bottom: 240,
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        currentSong.song!.songName,
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
+            ),
+            body: Column(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    child: Hero(
+                      tag: "music-image",
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              currentSong.song!.thumbnail_url,
+                            ),
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
-                      Text(
-                        currentSong.song!.artistNames,
-                        style: TextStyle(
-                          color: Pallete.inactiveSeekColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              Positioned(
-                top: 40,
-                left: 15,
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(Icons.keyboard_arrow_down_outlined, size: 35),
-                ),
-              ),
-              Positioned(
-                bottom: 200,
-                left: 20,
-                child: Container(
-                  height: 8,
-                  width: (MediaQuery.of(context).size.width - 40),
-
-                  decoration: BoxDecoration(
-                    color: Pallete.inactiveSeekColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-              ),
-              StreamBuilder(
-                stream: songPlaying.audioPlayer?.positionStream,
-                builder: (context, asyncSnapshot) {
-                  if (asyncSnapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return const SizedBox();
-                  }
-                  double sliderValue = 0.0;
-                  final position = asyncSnapshot.data;
-                  final duration = songPlaying.audioPlayer?.duration;
-                  if (position != null && duration != null) {
-                    sliderValue =
-                        position.inMilliseconds / duration.inMilliseconds;
-                  }
-                  return Positioned(
-                    bottom: 200,
-                    left: 20,
-                    child: Container(
-                      height: 8,
-                      width:
-                          sliderValue *
-                          (MediaQuery.of(context).size.width - 40),
-
-                      decoration: BoxDecoration(
-                        color: Pallete.whiteColor,
-                        borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                  );
-                },
-              ),
-              Positioned(
-                bottom: 120,
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                ),
+                Expanded(
+                  flex: 4,
+                  child: Column(
                     children: [
-                      IconButton(
-                        onPressed: () async {
-                          final currentPosition =
-                              songPlaying.audioPlayer!.position;
-                          final newPosition =
-                              currentPosition - const Duration(seconds: 10);
-                          await songPlaying.audioPlayer?.seek(
-                            newPosition.isNegative
-                                ? Duration.zero
-                                : newPosition,
+                      Row(
+                        children: [
+                          // Song Name & Song Artist Name will be in column
+                          Hero(
+                            tag: "music-name-artist",
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  currentSong.song!.songName,
+                                  style: TextStyle(
+                                    color: Pallete.whiteColor,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                Text(
+                                  currentSong.song!.artistNames,
+                                  style: TextStyle(
+                                    color: Pallete.inactiveBottomBarItemColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Expanded(child: SizedBox()),
+                          // Favourite button
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              CupertinoIcons.heart,
+                              color: Pallete.whiteColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      StreamBuilder(
+                        stream: songPlaying.audioPlayer!.positionStream,
+                        builder: (context, asyncSnapshot) {
+                          if (asyncSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const SizedBox();
+                          }
+                          final position = asyncSnapshot.data;
+                          final duration = songPlaying.audioPlayer!.duration;
+                          double sliderValue = 0.0;
+                          if (position != null && duration != null) {
+                            sliderValue =
+                                position.inMilliseconds /
+                                duration.inMilliseconds;
+                          }
+                          return Column(
+                            children: [
+                              SliderTheme(
+                                data: SliderTheme.of(context).copyWith(
+                                  activeTrackColor: Pallete.whiteColor,
+                                  inactiveTrackColor: Pallete.whiteColor
+                                      .withValues(alpha: 0.117),
+                                  thumbColor: Pallete.whiteColor,
+                                  trackHeight: 4,
+                                  overlayShape: SliderComponentShape.noOverlay,
+                                ),
+                                child: Slider(
+                                  value: sliderValue,
+                                  min: 0,
+                                  max: 1,
+                                  onChanged: (value) {
+                                    sliderValue = value;
+                                  },
+                                  onChangeEnd: songPlaying.seekSong,
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "${position?.inMinutes}:${(position?.inSeconds ?? 0) < 10 ? "0${position?.inSeconds}" : "${(position?.inSeconds ?? 0) % 60 < 10 ? "0${(position?.inSeconds ?? 0) % 60}" : (position?.inSeconds ?? 0) % 60}"}",
+                                    style: TextStyle(
+                                      color: Pallete.subtitleText,
+                                    ),
+                                  ),
+                                  Expanded(child: SizedBox()),
+                                  Text(
+                                    "${duration?.inMinutes}:${(duration?.inSeconds ?? 0) < 10 ? "0${duration?.inSeconds}" : "${(duration?.inSeconds ?? 0) % 60 < 10 ? "0${(duration?.inSeconds ?? 0) % 60}" : (duration?.inSeconds ?? 0) % 60}"}",
+                                    style: TextStyle(
+                                      color: Pallete.subtitleText,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           );
                         },
-                        icon: Icon(
-                          Icons.fast_rewind,
-                          size: 40,
-                          color: Pallete.whiteColor,
-                        ),
                       ),
-                      IconButton(
-                        onPressed: songPlaying.pausePlay,
-                        icon: Icon(
-                          currentSong.isPlaying
-                              ? Icons.pause_circle_outline
-                              : Icons.play_circle_fill,
-                          size: 50,
-                          color: Pallete.whiteColor,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () async {
-                          final currentPosition =
-                              songPlaying.audioPlayer!.position;
-                          final songDuration =
-                              songPlaying.audioPlayer!.duration;
-                          final newPosition =
-                              currentPosition + const Duration(seconds: 10);
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            padding: EdgeInsets.all(10),
+                            onPressed: () {},
+                            icon: Image.asset("assets/images/shuffle.png"),
+                          ),
+                          IconButton(
+                            padding: EdgeInsets.all(10),
 
-                          await songPlaying.audioPlayer?.seek(
-                            newPosition > songDuration!
-                                ? songDuration
-                                : newPosition,
-                          );
-                        },
-                        icon: Icon(
-                          Icons.fast_forward,
-                          size: 40,
-                          color: Pallete.whiteColor,
-                        ),
+                            onPressed: () {},
+                            icon: Image.asset(
+                              "assets/images/previous-song.png",
+                            ),
+                          ),
+                          Hero(
+                            tag: "music-play",
+                            child: IconButton(
+                              onPressed: songPlaying.pausePlay,
+                              icon: Icon(
+                                currentSong.isPlaying
+                                    ? CupertinoIcons.pause_circle_fill
+                                    : CupertinoIcons.play_circle_fill,
+                                color: Pallete.whiteColor,
+                                size: 80,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: Image.asset("assets/images/next-song.png"),
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: Image.asset("assets/images/repeat.png"),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 25),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: Image.asset(
+                                "assets/images/connect-device.png",
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: Image.asset("assets/images/playlist.png"),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

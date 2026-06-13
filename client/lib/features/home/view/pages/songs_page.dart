@@ -2,11 +2,9 @@ import 'package:client/core/providers/current_song_notifier.dart';
 import 'package:client/core/providers/current_user_notifier.dart';
 import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/core/widgets/loader.dart';
-import 'package:client/features/home/repository/home_repository.dart';
 import 'package:client/features/home/viewmodel/home_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 class SongsPage extends ConsumerWidget {
   const SongsPage({super.key});
@@ -47,7 +45,7 @@ class SongsPage extends ConsumerWidget {
                           onTap: () {
                             ref
                                 .read(currentSongProvider.notifier)
-                                .updateSong(singleSong);                            
+                                .updateSong(singleSong);
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 12),

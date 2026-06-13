@@ -24,22 +24,21 @@ class MusicSlab extends ConsumerWidget {
               PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) =>
                     const MusicPlayer(),
-                transitionDuration: const Duration(milliseconds: 800),
+                reverseTransitionDuration: const Duration(milliseconds: 350),
+                transitionDuration: const Duration(milliseconds: 500),
                 transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) =>
-                        SlideTransition(
-                          child: child,
-                          position:
-                              Tween<Offset>(
-                                begin: const Offset(0, 1),
-                                end: Offset.zero,
-                              ).animate(
-                                CurvedAnimation(
-                                  parent: animation,
-                                  curve: Curves.easeInOutCubic,
-                                ),
-                              ),
-                        ),
+                    (context, animation, secondaryAnimation, child) {
+                      final tween = Tween(
+                        begin: const Offset(0, 1),
+                        end: Offset.zero,
+                      ).chain(CurveTween(curve: Curves.easeInOutQuad));
+
+                      final offsetAnimation = animation.drive(tween);
+                      return SlideTransition(
+                        position: offsetAnimation,
+                        child: child,
+                      );
+                    },
               ),
             );
           }
@@ -109,13 +108,17 @@ class MusicSlab extends ConsumerWidget {
                           color: Pallete.whiteColor,
                         ),
                       ),
-                      IconButton(
-                        onPressed: songPlaying.pausePlay,
-                        icon: Icon(
-                          currentSong.isPlaying
-                              ? CupertinoIcons.pause_solid
-                              : CupertinoIcons.play_arrow_solid,
-                          color: Pallete.whiteColor,
+                      Hero(
+                        tag: "music-play",
+
+                        child: IconButton(
+                          onPressed: songPlaying.pausePlay,
+                          icon: Icon(
+                            currentSong.isPlaying
+                                ? CupertinoIcons.pause_solid
+                                : CupertinoIcons.play_arrow_solid,
+                            color: Pallete.whiteColor,
+                          ),
                         ),
                       ),
                     ],
@@ -156,15 +159,18 @@ class MusicSlab extends ConsumerWidget {
                   left: 8,
                   child: Stack(
                     children: [
-                      Container(
-                        height: 4,
-                        width:
-                            sliderValue *
-                            (MediaQuery.of(context).size.width -
-                                36), // here mediaQuery will be the main width and will slide because as it will be 0.1 or 0.2 it will be of it's percentage
-                        decoration: BoxDecoration(
-                          color: Pallete.whiteColor,
-                          borderRadius: BorderRadius.circular(7),
+                      Hero(
+                        tag: "music-image",
+                        child: Container(
+                          height: 4,
+                          width:
+                              sliderValue *
+                              (MediaQuery.of(context).size.width -
+                                  36), // here mediaQuery will be the main width and will slide because as it will be 0.1 or 0.2 it will be of it's percentage
+                          decoration: BoxDecoration(
+                            color: Pallete.whiteColor,
+                            borderRadius: BorderRadius.circular(7),
+                          ),
                         ),
                       ),
                     ],
