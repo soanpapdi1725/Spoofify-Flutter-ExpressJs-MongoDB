@@ -3,19 +3,36 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import "package:just_audio/just_audio.dart";
 part 'current_song_notifier.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class CurrentSongNotifier extends _$CurrentSongNotifier {
-  AudioPlayer? audioPlayer;
+  AudioPlayer? audioPlayer = AudioPlayer();
   @override
-  SongModel? build() {
-    return null;
+  ({SongModel? song, bool isPlaying}) build() {
+    return (song: null, isPlaying: false);
   }
 
   void updateSong(SongModel song) async {
-    audioPlayer = AudioPlayer();
     final audioSource = AudioSource.uri(Uri.parse(song.song_url));
+
+    audioPlayer!.playerStateStream.listen((songState) {
+      if (songState.processingState == ProcessingState.completed) {
+        audioPlayer!.seek(Duration.zero);
+        audioPlayer!.pause();
+        state = (song: state.song, isPlaying: false);
+      }
+    });
+
     await audioPlayer!.setAudioSource(audioSource);
-    await audioPlayer!.play();
-    state = song;
+    audioPlayer?.play();
+    state = (song: song, isPlaying: true);
+  }
+
+  void pausePlay() {
+    if (state.isPlaying) {
+      audioPlayer?.pause();
+    } else {
+      audioPlayer?.play();
+    }
+    state = (song: state.song, isPlaying: !state.isPlaying);
   }
 }

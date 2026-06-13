@@ -47,7 +47,7 @@ class SongsPage extends ConsumerWidget {
                           onTap: () {
                             ref
                                 .read(currentSongProvider.notifier)
-                                .updateSong(singleSong);
+                                .updateSong(singleSong);                            
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 12),

@@ -13,14 +13,18 @@ part of 'current_song_notifier.dart';
 final currentSongProvider = CurrentSongNotifierProvider._();
 
 final class CurrentSongNotifierProvider
-    extends $NotifierProvider<CurrentSongNotifier, SongModel?> {
+    extends
+        $NotifierProvider<
+          CurrentSongNotifier,
+          ({bool isPlaying, SongModel? song})
+        > {
   CurrentSongNotifierProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'currentSongProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -33,28 +37,39 @@ final class CurrentSongNotifierProvider
   CurrentSongNotifier create() => CurrentSongNotifier();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(SongModel? value) {
+  Override overrideWithValue(({bool isPlaying, SongModel? song}) value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<SongModel?>(value),
+      providerOverride: $SyncValueProvider<({bool isPlaying, SongModel? song})>(
+        value,
+      ),
     );
   }
 }
 
 String _$currentSongNotifierHash() =>
-    r'62cc5282df1af7b3121ac020e93a684bc4fef7e7';
+    r'37fbf87e04561f42d5a8ad29866d8ffdcb74be37';
 
-abstract class _$CurrentSongNotifier extends $Notifier<SongModel?> {
-  SongModel? build();
+abstract class _$CurrentSongNotifier
+    extends $Notifier<({bool isPlaying, SongModel? song})> {
+  ({bool isPlaying, SongModel? song}) build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<SongModel?, SongModel?>;
+    final ref =
+        this.ref
+            as $Ref<
+              ({bool isPlaying, SongModel? song}),
+              ({bool isPlaying, SongModel? song})
+            >;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<SongModel?, SongModel?>,
-              SongModel?,
+              AnyNotifier<
+                ({bool isPlaying, SongModel? song}),
+                ({bool isPlaying, SongModel? song})
+              >,
+              ({bool isPlaying, SongModel? song}),
               Object?,
               Object?
             >;

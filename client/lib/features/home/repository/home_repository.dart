@@ -73,7 +73,6 @@ class HomeRepository {
       for (final singleSong in resFromBody["data"]) {
         songList.add(SongModel.fromMap(singleSong));
       }
-      print(songList);
       return Right(songList);
     } catch (error) {
       return Left(Failure(error.toString()));

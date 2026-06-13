@@ -1,3 +1,4 @@
+import 'package:client/core/providers/current_song_notifier.dart';
 import 'package:client/core/providers/current_user_notifier.dart';
 import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/features/auth/repository/auth_local_repository.dart';
@@ -80,7 +81,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       body: Stack(
         children: [
           pages[selectedIndex],
-          Positioned(bottom: 0, child: MusicSlab()),
+          const Positioned(bottom: 0, child: MusicSlab()),
         ],
       ),
     );
