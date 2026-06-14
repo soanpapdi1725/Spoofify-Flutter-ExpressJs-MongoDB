@@ -79,29 +79,26 @@ class MusicPlayer extends ConsumerWidget {
                       Row(
                         children: [
                           // Song Name & Song Artist Name will be in column
-                          Hero(
-                            tag: "music-name-artist",
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  currentSong.song!.songName,
-                                  style: TextStyle(
-                                    color: Pallete.whiteColor,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                currentSong.song!.songName,
+                                style: TextStyle(
+                                  color: Pallete.whiteColor,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                                Text(
-                                  currentSong.song!.artistNames,
-                                  style: TextStyle(
-                                    color: Pallete.inactiveBottomBarItemColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              ),
+                              Text(
+                                currentSong.song!.artistNames,
+                                style: TextStyle(
+                                  color: Pallete.inactiveBottomBarItemColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                           const Expanded(child: SizedBox()),
                           // Favourite button
@@ -130,45 +127,51 @@ class MusicPlayer extends ConsumerWidget {
                                 position.inMilliseconds /
                                 duration.inMilliseconds;
                           }
-                          return Column(
-                            children: [
-                              SliderTheme(
-                                data: SliderTheme.of(context).copyWith(
-                                  activeTrackColor: Pallete.whiteColor,
-                                  inactiveTrackColor: Pallete.whiteColor
-                                      .withValues(alpha: 0.117),
-                                  thumbColor: Pallete.whiteColor,
-                                  trackHeight: 4,
-                                  overlayShape: SliderComponentShape.noOverlay,
-                                ),
-                                child: Slider(
-                                  value: sliderValue,
-                                  min: 0,
-                                  max: 1,
-                                  onChanged: (value) {
-                                    sliderValue = value;
-                                  },
-                                  onChangeEnd: songPlaying.seekSong,
-                                ),
-                              ),
-                              Row(
+                          return StatefulBuilder(
+                            builder: (context, setState) {
+                              return Column(
                                 children: [
-                                  Text(
-                                    "${position?.inMinutes}:${(position?.inSeconds ?? 0) < 10 ? "0${position?.inSeconds}" : "${(position?.inSeconds ?? 0) % 60 < 10 ? "0${(position?.inSeconds ?? 0) % 60}" : (position?.inSeconds ?? 0) % 60}"}",
-                                    style: TextStyle(
-                                      color: Pallete.subtitleText,
+                                  SliderTheme(
+                                    data: SliderTheme.of(context).copyWith(
+                                      activeTrackColor: Pallete.whiteColor,
+                                      inactiveTrackColor: Pallete.whiteColor
+                                          .withValues(alpha: 0.117),
+                                      thumbColor: Pallete.whiteColor,
+                                      trackHeight: 4,
+                                      overlayShape:
+                                          SliderComponentShape.noOverlay,
+                                    ),
+                                    child: Slider(
+                                      value: sliderValue,
+                                      min: 0,
+                                      max: 1,
+                                      onChanged: (value) {
+                                        sliderValue = value;
+                                        setState(() {});
+                                      },
+                                      onChangeEnd: songPlaying.seekSong,
                                     ),
                                   ),
-                                  Expanded(child: SizedBox()),
-                                  Text(
-                                    "${duration?.inMinutes}:${(duration?.inSeconds ?? 0) < 10 ? "0${duration?.inSeconds}" : "${(duration?.inSeconds ?? 0) % 60 < 10 ? "0${(duration?.inSeconds ?? 0) % 60}" : (duration?.inSeconds ?? 0) % 60}"}",
-                                    style: TextStyle(
-                                      color: Pallete.subtitleText,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "${position?.inMinutes}:${(position?.inSeconds ?? 0) < 10 ? "0${position?.inSeconds}" : "${(position?.inSeconds ?? 0) % 60 < 10 ? "0${(position?.inSeconds ?? 0) % 60}" : (position?.inSeconds ?? 0) % 60}"}",
+                                        style: TextStyle(
+                                          color: Pallete.subtitleText,
+                                        ),
+                                      ),
+                                      Expanded(child: SizedBox()),
+                                      Text(
+                                        "${duration?.inMinutes}:${(duration?.inSeconds ?? 0) < 10 ? "0${duration?.inSeconds}" : "${(duration?.inSeconds ?? 0) % 60 < 10 ? "0${(duration?.inSeconds ?? 0) % 60}" : (duration?.inSeconds ?? 0) % 60}"}",
+                                        style: TextStyle(
+                                          color: Pallete.subtitleText,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
-                              ),
-                            ],
+                              );
+                            },
                           );
                         },
                       ),
