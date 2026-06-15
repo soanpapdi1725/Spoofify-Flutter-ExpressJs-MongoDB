@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:client/core/constants/server_constant.dart';
+import 'package:client/core/app_failure/app_failure.dart';
 import 'package:client/features/auth/model/user_model.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
@@ -14,7 +15,7 @@ AuthRemoteRepository authRemoteRepository(Ref ref) {
 }
 
 class AuthRemoteRepository {
-  Future<Either<Failure, UserModel>> getCurrentUserData(String token) async {
+  Future<Either<AppFailure, UserModel>> getCurrentUserData(String token) async {
     try {
       final response = await http.post(
         Uri.parse("${ServerConstant.authServerApi}/"),
@@ -26,18 +27,18 @@ class AuthRemoteRepository {
 
       final resFromBody = jsonDecode(response.body) as Map<String, dynamic>;
       if (response.statusCode != 200) {
-        return Left(Failure(resFromBody["message"]));
+        return Left(AppFailure(resFromBody["message"]));
       }
       print("current data function ${resFromBody['data']}");
       return Right(
         UserModel.fromMap(resFromBody['data']).copyWith(token: token),
       );
     } catch (error) {
-      return Left(Failure(error));
+      return Left(AppFailure(error.toString()));
     }
   }
 
-  Future<Either<Failure, UserModel>> signUpFunction({
+  Future<Either<AppFailure, UserModel>> signUpFunction({
     required String name,
     required String email,
     required String password,
@@ -50,16 +51,16 @@ class AuthRemoteRepository {
       );
       final resFromBody = jsonDecode(response.body) as Map<String, dynamic>;
       if (response.statusCode != 200) {
-        return Left(Failure(resFromBody["message"]));
+        return Left(AppFailure(resFromBody["message"]));
       }
       final dataFromResponse = resFromBody['data'];
       return Right(UserModel.fromMap(dataFromResponse));
     } catch (error) {
-      return Left(Failure(error));
+      return Left(AppFailure(error.toString()));
     }
   }
 
-  Future<Either<Failure, UserModel>> loginFunction({
+  Future<Either<AppFailure, UserModel>> loginFunction({
     required String email,
     required String password,
   }) async {
@@ -71,12 +72,12 @@ class AuthRemoteRepository {
       );
       final user = jsonDecode(response.body) as Map<String, dynamic>;
       if (response.statusCode != 200) {
-        return Left(Failure(user["message"]));
+        return Left(AppFailure(user["message"]));
       }
       print(user["data"]);
       return Right(UserModel.fromMap(user['data']));
     } catch (error) {
-      return Left(Failure(error));
+      return Left(AppFailure(error.toString()));
     }
   }
 }

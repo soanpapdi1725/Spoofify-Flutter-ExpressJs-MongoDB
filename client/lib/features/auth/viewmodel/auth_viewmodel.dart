@@ -40,7 +40,7 @@ class AuthViewmodel extends _$AuthViewmodel {
     );
     final val = switch (res) {
       Left(value: final l) => state = AsyncValue.error(
-        l.error,
+        l.message,
         StackTrace.current,
       ),
       Right(value: final r) => state = AsyncValue.data(r),
@@ -59,7 +59,7 @@ class AuthViewmodel extends _$AuthViewmodel {
     );
     final val = switch (res) {
       Left(value: final l) => state = AsyncValue.error(
-        l.error,
+        l.message,
         StackTrace.current,
       ),
       Right(value: final r) => _loginSuccess(r),
@@ -85,7 +85,7 @@ class AuthViewmodel extends _$AuthViewmodel {
 
       final val = switch (res) {
         Left(value: final l) => state = AsyncValue.error(
-          l.error,
+          l.message,
           StackTrace.current,
         ),
         Right(value: final r) => _updateUserOnRestart(

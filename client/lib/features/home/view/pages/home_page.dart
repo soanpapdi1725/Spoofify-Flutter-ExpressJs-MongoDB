@@ -1,5 +1,3 @@
-import 'package:client/core/providers/current_song_notifier.dart';
-import 'package:client/core/providers/current_user_notifier.dart';
 import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/features/auth/repository/auth_local_repository.dart';
 import 'package:client/features/auth/view/pages/login_page.dart';
@@ -24,30 +22,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Home"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => UploadSongPage()),
-              );
-            },
-            icon: Icon(CupertinoIcons.music_note_list),
-          ),
-          IconButton(
-            onPressed: () {
-              ref.read(authLocalRepositoryProvider).setToken("");
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-            },
-            icon: Icon(Icons.logout),
-          ),
-        ],
-      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
         onTap: (index) {
@@ -81,7 +55,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       body: Stack(
         children: [
           pages[selectedIndex],
-          const Positioned(bottom: 0, child: MusicSlab()),
+          Positioned(bottom: 0, child: MusicSlab()),
         ],
       ),
     );

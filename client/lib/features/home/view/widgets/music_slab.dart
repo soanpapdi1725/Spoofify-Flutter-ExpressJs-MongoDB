@@ -46,7 +46,8 @@ class MusicSlab extends ConsumerWidget {
         onTap: () {},
         child: Stack(
           children: [
-            Container(
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 400),
               margin: EdgeInsets.symmetric(horizontal: 2),
               height: 75,
               width: MediaQuery.of(context).size.width - 4,

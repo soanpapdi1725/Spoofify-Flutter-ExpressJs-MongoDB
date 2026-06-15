@@ -46,7 +46,7 @@ final class GetAllSongsProvider
   }
 }
 
-String _$getAllSongsHash() => r'37d329bd7004dd9fd1f3d0a64b5cd9c100e82191';
+String _$getAllSongsHash() => r'bb1dfff802ef070607a71530058d13aabe46f963';
 
 @ProviderFor(HomeViewModel)
 final homeViewModelProvider = HomeViewModelProvider._();
@@ -80,7 +80,7 @@ final class HomeViewModelProvider
   }
 }
 
-String _$homeViewModelHash() => r'f12f1a54fa27e05fcf06fcf6244cd8078ea225ec';
+String _$homeViewModelHash() => r'0200fee12c548e9d6837cabd9fcc9bbcc8d7aeee';
 
 abstract class _$HomeViewModel extends $Notifier<AsyncValue<dynamic>?> {
   AsyncValue<dynamic>? build();

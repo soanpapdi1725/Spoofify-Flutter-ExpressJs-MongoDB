@@ -6,15 +6,17 @@ import 'package:client/features/home/model/song_model.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:client/core/app_failure/app_failure.dart';
+
 part 'home_repository.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 HomeRepository homeRepository(Ref ref) {
   return HomeRepository();
 }
 
 class HomeRepository {
-  Future<Either<Failure, String>> uploadSongFunction({
+  Future<Either<AppFailure, String>> uploadSongFunction({
     required File selectedAudio,
     required File selectedThumbNail,
     required String songName,
@@ -43,18 +45,18 @@ class HomeRepository {
         ..headers.addAll({"Authorization": "Bearer $token"});
 
       final response = await request.send();
-      if (response != 200) {
-        return Left(Failure("Error of not"));
+      if (response.statusCode != 200) {
+        return Left(AppFailure("Error of not"));
       }
       print(await response.stream.bytesToString());
       return Right(await response.stream.bytesToString());
     } catch (error) {
       print(error);
-      return Left(Failure("Error Catch"));
+      return Left(AppFailure("Error Catch"));
     }
   }
 
-  Future<Either<Failure, List<SongModel>>> getAllSongFunction({
+  Future<Either<AppFailure, List<SongModel>>> getAllSongFunction({
     required String token,
   }) async {
     try {
@@ -67,7 +69,7 @@ class HomeRepository {
       );
       final resFromBody = jsonDecode(res.body) as Map<String, dynamic>;
       if (res.statusCode != 200) {
-        return Left(Failure(resFromBody["message"]));
+        return Left(AppFailure(resFromBody["message"]));
       }
       List<SongModel> songList = [];
       for (final singleSong in resFromBody["data"]) {
@@ -75,7 +77,7 @@ class HomeRepository {
       }
       return Right(songList);
     } catch (error) {
-      return Left(Failure(error.toString()));
+      return Left(AppFailure(error.toString()));
     }
   }
 }

@@ -21,7 +21,7 @@ final class HomeRepositoryProvider
         argument: null,
         retry: null,
         name: r'homeRepositoryProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -48,4 +48,4 @@ final class HomeRepositoryProvider
   }
 }
 
-String _$homeRepositoryHash() => r'a7ad35b71d152c2f2e026facffd4f91979e425ab';
+String _$homeRepositoryHash() => r'fc88b322bc92dd17610d851bad0811af1342ee18';
