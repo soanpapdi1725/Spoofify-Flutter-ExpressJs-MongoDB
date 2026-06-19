@@ -48,7 +48,6 @@ class HomeRepository {
       if (response.statusCode != 200) {
         return Left(AppFailure("Error of not"));
       }
-      print(await response.stream.bytesToString());
       return Right(await response.stream.bytesToString());
     } catch (error) {
       print(error);

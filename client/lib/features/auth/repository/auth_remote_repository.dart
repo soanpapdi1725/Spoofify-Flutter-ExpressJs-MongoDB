@@ -29,7 +29,6 @@ class AuthRemoteRepository {
       if (response.statusCode != 200) {
         return Left(AppFailure(resFromBody["message"]));
       }
-      print("current data function ${resFromBody['data']}");
       return Right(
         UserModel.fromMap(resFromBody['data']).copyWith(token: token),
       );
@@ -65,6 +64,7 @@ class AuthRemoteRepository {
     required String password,
   }) async {
     try {
+
       final response = await http.post(
         Uri.parse("${ServerConstant.authServerApi}/login"),
         headers: {'Content-Type': 'application/json'},
@@ -74,7 +74,6 @@ class AuthRemoteRepository {
       if (response.statusCode != 200) {
         return Left(AppFailure(user["message"]));
       }
-      print(user["data"]);
       return Right(UserModel.fromMap(user['data']));
     } catch (error) {
       return Left(AppFailure(error.toString()));

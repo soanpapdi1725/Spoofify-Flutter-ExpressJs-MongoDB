@@ -12,7 +12,6 @@ class LibraryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentSong = ref.watch(currentSongProvider);
-    print("song from library: ${currentSong}");
     return Scaffold(
       appBar: AppBar(
         title: Text("Home"),

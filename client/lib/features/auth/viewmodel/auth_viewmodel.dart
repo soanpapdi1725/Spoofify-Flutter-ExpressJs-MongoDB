@@ -98,7 +98,6 @@ class AuthViewmodel extends _$AuthViewmodel {
   }
 
   AsyncValue<UserModel> _updateUserOnRestart(UserModel user) {
-    print("User $user");
     _currentUserNotifier.addUser(user);
     return state = AsyncValue.data(user);
   }
