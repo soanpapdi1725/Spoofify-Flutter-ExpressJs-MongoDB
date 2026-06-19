@@ -1,3 +1,5 @@
+import 'package:client/core/providers/current_song_notifier.dart';
+import 'package:client/core/providers/current_user_notifier.dart';
 import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/features/auth/repository/auth_local_repository.dart';
 import 'package:client/features/auth/view/pages/login_page.dart';
@@ -18,39 +20,93 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   int selectedIndex = 0;
-  final pages = const [SongsPage(), LibraryPage()];
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: selectedIndex,
-        onTap: (index) {
-          setState(() {
-            selectedIndex = index;
-          });
+    final pages = [
+      SongsPage(
+        onClickProfile: () {
+          scaffoldKey.currentState?.openDrawer();
         },
-        items: [
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              selectedIndex == 0
-                  ? "assets/images/home_filled.png"
-                  : "assets/images/home_unfilled.png",
-              color: selectedIndex == 0
-                  ? Pallete.whiteColor
-                  : Pallete.inactiveBottomBarItemColor,
-            ),
-            label: "Home",
+      ),
+      LibraryPage(),
+    ];
+    final currentUser = ref.watch(currentUserProvider);
+    return Scaffold(
+      key: scaffoldKey,
+      drawer: Drawer(
+        child: SafeArea(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(currentUser!.firstName + " " + currentUser.lastName),
+                  Expanded(child: SizedBox()),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UploadSongPage(),
+                        ),
+                      );
+                    },
+                    icon: Icon(CupertinoIcons.music_note_list),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      ref.read(authLocalRepositoryProvider).setToken("");
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                      );
+                      ref.read(currentSongProvider.notifier).stopSong();
+                    },
+                    icon: Icon(Icons.logout),
+                  ),
+                ],
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              "assets/images/library.png",
-              color: selectedIndex == 1
-                  ? Pallete.whiteColor
-                  : Pallete.inactiveBottomBarItemColor,
+        ),
+      ),
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          splashColor: Pallete.transparentColor,
+          highlightColor: Pallete.transparentColor,
+          splashFactory: NoSplash.splashFactory,
+        ),
+
+        child: BottomNavigationBar(
+          currentIndex: selectedIndex,
+          onTap: (index) {
+            setState(() {
+              selectedIndex = index;
+            });
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: Image.asset(
+                selectedIndex == 0
+                    ? "assets/images/home_filled.png"
+                    : "assets/images/home_unfilled.png",
+                color: selectedIndex == 0
+                    ? Pallete.whiteColor
+                    : Pallete.inactiveBottomBarItemColor,
+              ),
+              label: "Home",
             ),
-            label: "Library",
-          ),
-        ],
+            BottomNavigationBarItem(
+              icon: Image.asset(
+                "assets/images/library.png",
+                color: selectedIndex == 1
+                    ? Pallete.whiteColor
+                    : Pallete.inactiveBottomBarItemColor,
+              ),
+              label: "Library",
+            ),
+          ],
+        ),
       ),
       body: Stack(
         children: [

@@ -11,32 +11,28 @@ class LibraryPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentSong = ref.watch(currentSongProvider);
     return Scaffold(
+    
       appBar: AppBar(
         title: Text("Home"),
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => UploadSongPage()),
-              );
-            },
-            icon: Icon(CupertinoIcons.music_note_list),
-          ),
-          IconButton(
-            onPressed: () {
-              ref.read(authLocalRepositoryProvider).setToken("");
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginPage()),
-              );
-              ref.read(currentSongProvider.notifier).stopSong();
-            },
-            icon: Icon(Icons.logout),
-          ),
+          
         ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(
+          crossAxisAlignment: .start,
+          children: [
+            Text(
+              "1. Playlist Array for each user saved in Backend's DB and cached in Hive",
+            ),
+            Text(
+              "2. My songs will be created where user's own songs will be saved",
+            ),
+            Text("3. Favourites of user"),
+          ],
+        ),
       ),
     );
   }
