@@ -40,11 +40,11 @@ export const postSignup = async (req, res) => {
     };
     const newUser = await User.create(userData);
     // and send mail
-    // await mailSender(
-    //   "Account Created Successfully",
-    //   accountCreatedTemplate(firstName, email, password),
-    //   email,
-    // );
+    await mailSender(
+      "Account Created Successfully",
+      accountCreatedTemplate(firstName, email, password),
+      email,
+    );
     // send response 200 and account creation message
     const payload = {
       email: email,
@@ -58,12 +58,6 @@ export const postSignup = async (req, res) => {
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       httpOnly: true,
     };
-    // Send mail
-    // await mailSender(
-    //   "Account Logged In Successfully",
-    //   loginNotificationTemplate(userExist.firstName, email),
-    //   email,
-    // );
     // Send Response with cookie and json -> not by function
     return res
       .cookie("token", token, cookieOptions)
@@ -104,11 +98,11 @@ export const postLogin = async (req, res) => {
     }
     // if user exist then compare password
     if (!(await bcrypt.compare(password, userExist.password))) {
-      // await mailSender(
-      //   "Someone Tried to Login Your Account",
-      //   suspiciousLoginTemplate(userExist.firstName, email),
-      //   email,
-      // );
+      await mailSender(
+        "Someone Tried to Login Your Account",
+        suspiciousLoginTemplate(userExist.firstName, email),
+        email,
+      );
       return sendResponse(res, 400, false, "Incorrect User Crendentials");
     }
     //
@@ -126,13 +120,12 @@ export const postLogin = async (req, res) => {
       httpOnly: true,
     };
     // Send mail
-    // await mailSender(
-    //   "Account Logged In Successfully",
-    //   loginNotificationTemplate(userExist.firstName, email),
-    //   email,
-    // );
+    await mailSender(
+      "Account Logged In Successfully",
+      loginNotificationTemplate(userExist.firstName, email),
+      email,
+    );
     // Send Response with cookie and json -> not by function
-    console.log(userExist.toJSON());
     return res
       .cookie("token", token, cookieOptions)
       .status(200)
@@ -162,19 +155,17 @@ export const sendUserData = async (req, res) => {
     }
     // decode the token
     const decodedUser = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decodedUser);
     // get user id from token
     // search in db
     const isUserExist = await User.findOne({
       _id: decodedUser.id,
       email: decodedUser.email,
-    })
-      
+    });
+
     // if not found send 404
     if (!isUserExist) {
       return sendResponse(res, 404, false, "User does not exist");
     }
-    console.log(isUserExist);
     // if found send response with user data
     return sendResponse(res, 200, true, "User Found And sent successfully", {
       ...isUserExist.toJSON(),

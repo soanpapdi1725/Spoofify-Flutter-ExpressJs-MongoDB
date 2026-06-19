@@ -32,6 +32,7 @@ class LibraryPage extends ConsumerWidget {
                 context,
                 MaterialPageRoute(builder: (context) => LoginPage()),
               );
+              ref.read(currentSongProvider.notifier).stopSong();
             },
             icon: Icon(Icons.logout),
           ),

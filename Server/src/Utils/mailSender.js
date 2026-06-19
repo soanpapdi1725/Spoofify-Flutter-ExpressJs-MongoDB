@@ -16,7 +16,6 @@ const mailSender = async (title, body, email) => {
       subject: `${title}`,
       html: `${body}`,
     });
-    console.log(info);
     return info;
   } catch (error) {
     console.log("Error while sending mail", error);

@@ -4,7 +4,6 @@ import { sendResponse } from "../Utils/sendResponse.js";
 
 export const auth_middleware = async (req, res, next) => {
   try {
-    console.log("worked");
     const authHeader = req.headers?.authorization;
     const token =
       (authHeader && authHeader?.startsWith("Bearer ")

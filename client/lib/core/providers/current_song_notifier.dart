@@ -16,7 +16,7 @@ class CurrentSongNotifier extends _$CurrentSongNotifier {
   }
 
   void updateSong(SongModel song) async {
-    await audioPlayer?.stop();
+    stopSong();
     audioPlayer = AudioPlayer();
     final audioSource = AudioSource.uri(
       Uri.parse(song.song_url),
@@ -56,5 +56,9 @@ class CurrentSongNotifier extends _$CurrentSongNotifier {
         milliseconds: (val * audioPlayer!.duration!.inMilliseconds).toInt(),
       ),
     );
+  }
+
+  void stopSong() async {
+    await audioPlayer?.stop();
   }
 }
