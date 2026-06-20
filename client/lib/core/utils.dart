@@ -27,9 +27,9 @@ void showSnackBar(BuildContext context, String textToShow, bool success) {
 
 Future<File?> pickAudio() async {
   try {
-    final filePickerRes = await FilePicker.pickFiles(type: FileType.audio);
+    final filePickerRes = await FilePicker.pickFile(type: FileType.audio);
     if (filePickerRes != null) {
-      final path = filePickerRes.files.first.path;
+      final path = filePickerRes.path;
       if (path != null) {
         return File(path);
       }
@@ -43,9 +43,9 @@ Future<File?> pickAudio() async {
 
 Future<File?> pickImage() async {
   try {
-    final pickImageRes = await FilePicker.pickFiles(type: FileType.image);
+    final pickImageRes = await FilePicker.pickFile(type: FileType.image);
     if (pickImageRes != null) {
-      final path = pickImageRes.files.first.path;
+      final path = pickImageRes.path;
       if (path != null) {
         return File(path);
       }

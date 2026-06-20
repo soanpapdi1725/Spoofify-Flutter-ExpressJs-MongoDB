@@ -58,7 +58,6 @@ class HomeViewModel extends _$HomeViewModel {
       ),
       Right(value: final r) => state = AsyncValue.data(r),
     };
-
     print(val);
   }
 

@@ -4,6 +4,7 @@ import 'package:client/core/theme/app_pallete.dart';
 import 'package:client/core/utils.dart';
 import 'package:client/core/widgets/custom_field.dart';
 import 'package:client/core/widgets/loader.dart';
+import 'package:client/features/home/view/pages/home_page.dart';
 import 'package:client/features/home/view/widgets/audio_waves.dart';
 import 'package:client/features/home/viewmodel/home_viewmodel.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -87,6 +88,11 @@ class _UploadSongPageState extends ConsumerState<UploadSongPage> {
                       artistNames: artistController.text,
                       hexCode: selectedColor,
                     );
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => HomePage()),
+                  (_) => false,
+                );
               } else {
                 showSnackBar(context, "Fields Cannot be Empty", false);
               }

@@ -36,37 +36,70 @@ class _HomePageState extends ConsumerState<HomePage> {
       key: scaffoldKey,
       drawer: Drawer(
         child: SafeArea(
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Text(currentUser!.firstName + " " + currentUser.lastName),
-                  Expanded(child: SizedBox()),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UploadSongPage(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      height: 56,
+                      width: 56,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            "https://api.dicebear.com/10.x/initials/png?seed=${currentUser!.firstName + " " + currentUser.lastName}&backgroundColor=ffdfbf,d1d4f9,c0aede",
+                          ),
                         ),
-                      );
-                    },
-                    icon: Icon(CupertinoIcons.music_note_list),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      ref.read(authLocalRepositoryProvider).setToken("");
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                      );
-                      ref.read(currentSongProvider.notifier).stopSong();
-                    },
-                    icon: Icon(Icons.logout),
-                  ),
-                ],
-              ),
-            ],
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Column(
+                      crossAxisAlignment: .start,
+                      mainAxisAlignment: .spaceAround,
+                      children: [
+                        Text(
+                          currentUser!.firstName + " " + currentUser.lastName,
+                          style: TextStyle(fontSize: 18, fontWeight: .w700),
+                        ),
+                        Text(
+                          "View Profile",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: .w400,
+                            color: Pallete.subtitleText,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Expanded(child: SizedBox()),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UploadSongPage(),
+                          ),
+                        );
+                      },
+                      icon: Icon(CupertinoIcons.music_note_list),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        ref.read(authLocalRepositoryProvider).setToken("");
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
+                        ref.read(currentSongProvider.notifier).stopSong();
+                      },
+                      icon: Icon(Icons.logout),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
